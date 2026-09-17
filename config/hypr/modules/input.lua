@@ -4,10 +4,10 @@
 
 hl.config({
 	input = {
-		kb_layout = "us",
+		kb_layout = "us,ara",
 		kb_variant = "",
 		kb_model = "",
-		kb_options = "",
+		kb_options = "grp:alts_toggle,ctrl:swapcaps",
 		kb_rules = "",
 
 		repeat_rate = 40,

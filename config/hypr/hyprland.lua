@@ -14,7 +14,7 @@ launcher = "rofi -show drun"
 runner = "rofi -show run"
 
 require("modules.monitors")
-require("modules.binds")
+require("modules.keybinds")
 require("modules.autostart")
 require("modules.env")
 require("modules.permissions")
