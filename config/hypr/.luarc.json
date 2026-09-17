@@ -1,0 +1,17 @@
+{
+  "workspace": {
+    "library": ["/usr/share/hypr/stubs"]
+  },
+  "diagnostics.globals": [
+    "hl",
+    "mainMod",
+    "terminal",
+    "mainBrowser",
+    "secondBrowser",
+    "fileManager",
+    "menu",
+    "secondMod",
+        "launcher",
+        "runner"
+  ]
+}
