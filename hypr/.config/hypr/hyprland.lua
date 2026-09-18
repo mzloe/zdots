@@ -1,17 +1,17 @@
-mainMod = "ALT" -- Sets "ALT" key as main modifier
-secondMod = "SUPER"
+MAIN_MOD = "ALT" -- Sets "ALT" key as main modifier
+SECOND_MOD = "SUPER"
 
 ---------------------
 ---- MY PROGRAMS ----
 ---------------------
 
 -- Set programs that you use
-terminal = "ghostty"
-fileManager = "thunar"
-mainBrowser = "brave-origin"
-secondBrowser = "zen-browser"
-launcher = "rofi -show drun"
-runner = "rofi -show run"
+TERMINAL = "ghostty"
+FILE_MANAGER = "thunar"
+MAIN_BROWSER = "brave-origin"
+SECOND_BROWSER = "zen-browser"
+LAUNCHER = "rofi -show drun"
+RUNNER = "rofi -show run"
 
 require("modules.monitors")
 require("modules.keybinds")
