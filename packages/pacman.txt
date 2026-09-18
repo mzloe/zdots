@@ -1,0 +1,105 @@
+# Base system (pacstrap)
+base
+base-devel
+linux
+linux-headers
+linux-firmware
+sudo
+man-db
+man-pages
+vim
+git
+networkmanager
+reflector
+
+# Hardware and boot. Intel laptop; swap for your CPU/GPU on other hardware.
+intel-ucode
+mesa
+vulkan-intel
+grub
+efibootmgr
+os-prober
+dosfstools
+ntfs-3g
+ntfsprogs
+fuse3
+gparted
+
+# Desktop
+hyprland
+hyprlock
+hypridle
+hyprpolkitagent
+xdg-desktop-portal-hyprland
+xorg-xwayland
+qt5-wayland
+qt6-wayland
+qt6-svg
+qt6-multimedia-ffmpeg
+qt6ct
+sddm
+polkit
+waybar
+swaync
+rofi
+libnotify
+wl-clipboard
+xdg-utils
+brightnessctl
+
+# Theming and wallpaper (ze)
+stow
+awww
+quickshell
+libvips
+nwg-look
+gnome-themes-extra
+
+# Terminal, editors, shell
+ghostty
+zsh
+neovim
+zed
+btop
+htop
+fastfetch
+ripgrep
+jq
+ncdu
+github-cli
+go
+
+# Audio, network, bluetooth
+pipewire
+pipewire-alsa
+pipewire-audio
+pipewire-pulse
+wireplumber
+pavucontrol
+playerctl
+bluez
+bluez-utils
+bluez-deprecated-tools
+bluetui
+
+# Files
+thunar
+thunar-archive-plugin
+thunar-volman
+tumbler
+ffmpegthumbnailer
+gvfs
+gvfs-mtp
+imv
+
+# Apps
+chromium
+keepassxc
+
+# Fonts
+noto-fonts
+noto-fonts-cjk
+noto-fonts-emoji
+ttf-jetbrains-mono-nerd
+ttf-cascadia-code-nerd
+ttf-iosevka-nerd

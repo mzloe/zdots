@@ -1,0 +1,7 @@
+# AUR packages, one per line (installed with yay).
+yay
+brave-origin-bin
+zen-browser-bin
+t3code-nightly-bin
+nmrs
+yaru-icon-theme
