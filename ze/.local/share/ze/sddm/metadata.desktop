@@ -1,0 +1,12 @@
+[SddmGreeterTheme]
+Name=ze
+Description=SDDM greeter that follows the ze theme and login wallpaper
+Author=mo3az, derived from sddm-astronaut-theme by Keyitdev
+License=GPL-3.0-or-later
+Type=sddm-theme
+Version=1.0
+ConfigFile=current/theme.conf
+MainScript=Main.qml
+Theme-Id=ze
+Theme-API=2.0
+QtVersion=6
