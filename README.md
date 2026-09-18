@@ -81,10 +81,14 @@ same `ze theme set`, captured in a headless compositor.
 
 ## Make it yours
 
-Adding a theme is a directory with a `colors.toml` and a `backgrounds/`
-folder. Theming another app is one template file and one include line.
-Pulling omarchy's new themes is `ze theme sync`. All three, plus how this theme
-set differs from omarchy's, are in [docs/customizing.md](docs/customizing.md).
+Adding a wallpaper to a theme is a copy into one of two folders:
+`backgrounds/<theme>/` for your own (shows in the picker at once) or
+`themes/<theme>/backgrounds/` to ship it with the theme (shows after the next
+`ze theme set`). Adding a theme is a directory with a `colors.toml` and a
+`backgrounds/` folder. Theming another app is one template file and one
+include line. Pulling omarchy's new themes is `ze theme sync`. Step by step
+for all four, plus how this theme set differs from omarchy's, is in
+[docs/customizing.md](docs/customizing.md).
 
 ## Credits
 

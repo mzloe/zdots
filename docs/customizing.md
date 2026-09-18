@@ -1,8 +1,58 @@
 # Make it yours
 
-Three things you will want to do sooner or later: add a theme, theme an app
-that is not covered yet, and pull in whatever omarchy added since. Each one is
-short.
+Four things you will want to do sooner or later: add a wallpaper to a theme,
+add a theme, theme an app that is not covered yet, and pull in whatever
+omarchy added since. Each one is short.
+
+## Add a wallpaper to a theme
+
+A theme's wallpapers come from two folders, and `ze bg pick`, `ze bg next`
+and the theme set see both:
+
+| Folder | Read from | Shows in the picker |
+| --- | --- | --- |
+| `ze/.local/share/ze/backgrounds/<theme>/` | the repo, live | at once |
+| `ze/.local/share/ze/themes/<theme>/backgrounds/` | the copy made by the last theme set | after `ze theme set <theme>` |
+
+Use the first for wallpapers that are yours. Use the second for wallpapers
+that belong to the theme and should ship with it. Formats: jpg, jpeg, png, gif,
+bmp, webp. In both cases `ze` reads the repo directly, so no restow is needed.
+
+### Option A: your own wallpaper, visible at once
+
+1. Copy the image in. Create the folder if the theme has none yet.
+
+   ```sh
+   mkdir -p ze/.local/share/ze/backgrounds/tokyo-night
+   cp ~/Pictures/sunset.jpg ze/.local/share/ze/backgrounds/tokyo-night/sunset.jpg
+   ```
+
+2. Press `ALT + SHIFT + W`. The new image is in the carousel.
+
+### Option B: part of the theme
+
+1. Copy the image into the theme. Give it a number prefix: wallpapers sort by
+   name and the first one is what a theme set puts on the desktop.
+
+   ```sh
+   cp ~/Pictures/sunset.jpg ze/.local/share/ze/themes/tokyo-night/backgrounds/4-sunset.jpg
+   ```
+
+2. Re-apply the theme so the picker's copy is refreshed. This resets the
+   desktop to the theme's first wallpaper, so pick the new one afterwards.
+
+   ```sh
+   ze theme set tokyo-night
+   ```
+
+Extras for either option:
+
+- An `.mp4` with the same base name next to the image plays as video on the
+  login screen. The desktop shows the still.
+- To make it the theme's default login wallpaper, point `login.*` at it:
+  `ln -sf backgrounds/4-sunset.jpg ze/.local/share/ze/themes/tokyo-night/login.jpg`.
+- The carousel caches thumbnails by file size and modification time, so a
+  replaced image is re-thumbnailed the next time it opens.
 
 ## Add a theme
 
@@ -50,9 +100,6 @@ Details worth knowing:
   }
   ```
 
-- Wallpapers you want to keep out of the theme directory go in
-  `ze/.local/share/ze/backgrounds/<theme>/`. `ze bg pick` and `ze bg next` see
-  both places.
 
 ## Theme another app
 
