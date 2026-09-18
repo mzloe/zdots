@@ -1,0 +1,11 @@
+@define-color center-bg                 alpha({{ background }}, 0.8);
+@define-color notification-bg           alpha({{ background }}, 0.9);
+@define-color center-notification-bg    {{ lighter_background }};
+@define-color background                alpha({{ background }}, 0.9);
+@define-color background-alt            {{ lighter_background }};
+@define-color text                      {{ foreground }};
+@define-color text-alt                  {{ dark_foreground }};
+@define-color selected                  alpha(@text-alt, .4);
+@define-color hover                     alpha(@selected, .4);
+@define-color urgent                    {{ red }};
+@define-color border                    {{ muted }};
