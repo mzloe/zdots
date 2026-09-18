@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# ze - theme, wallpaper and install commands for this dotfiles repo.
+#
+#   ze theme set <name> | list | pick | current | sync | color <key>|--all
+#   ze bg    set <file> | next | pick | restore
+#   ze install [--no-packages] [theme-name]
+
+set -o pipefail
+
+# Stowed as ~/.local/bin/ze -> <repo>/ze/.local/bin/ze; resolve through the link
+ZE_BIN=$(readlink -f "${BASH_SOURCE[0]}")
+ZE_SHARE=$(dirname "$(dirname "$ZE_BIN")")/share/ze
+ZE_REPO=$(dirname "$(dirname "$(dirname "$(dirname "$ZE_BIN")")")")
+export ZE_BIN ZE_SHARE ZE_REPO
+
+source "$ZE_SHARE/lib/common.sh"
+
+usage() {
+  sed -n '3,8p' "$ZE_BIN" | sed 's/^# \{0,1\}//'
+}
+
+group="$1"
+(( $# > 0 )) && shift
+command="$1"
+(( $# > 0 )) && shift
+
+case "$group:$command" in
+  theme:set)     source "$ZE_SHARE/lib/theme.sh";  ze_theme_set "$@" ;;
+  theme:list)    source "$ZE_SHARE/lib/theme.sh";  ze_theme_list ;;
+  theme:pick)    source "$ZE_SHARE/lib/theme.sh";  ze_theme_pick "$@" ;;
+  theme:current) cat "$ZE_CURRENT_THEME_NAME_FILE" 2>/dev/null ;;
+  theme:sync)    source "$ZE_SHARE/lib/sync.sh";   ze_theme_sync "$@" ;;
+  theme:color)
+    source "$ZE_SHARE/lib/colors.sh"
+    ze_load_colors "$ZE_CURRENT_THEME_PATH/colors.toml"
+    if [[ $1 == --all ]]; then ze_colors_all; else ze_color "$@"; fi
+    ;;
+  bg:set)        source "$ZE_SHARE/lib/bg.sh";     ze_bg_set "$@" ;;
+  bg:next)       source "$ZE_SHARE/lib/bg.sh";     ze_bg_next "$@" ;;
+  bg:pick)       source "$ZE_SHARE/lib/bg.sh";     ze_bg_pick "$@" ;;
+  bg:restore)    source "$ZE_SHARE/lib/bg.sh";     ze_bg_restore ;;
+  install:*)     exec "$ZE_REPO/install.sh" $command "$@" ;;
+  help:* | -h:* | --help:* | :*) usage ;;
+  *)
+    echo "ze: unknown command '$group $command'" >&2
+    usage >&2
+    exit 1
+    ;;
+esac
