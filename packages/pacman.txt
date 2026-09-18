@@ -35,6 +35,7 @@ xorg-xwayland
 qt5-wayland
 qt6-wayland
 qt6-svg
+qt6-imageformats
 qt6-multimedia-ffmpeg
 qt6ct
 sddm
