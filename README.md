@@ -48,10 +48,10 @@ is moved to `<name>.bak.<timestamp>`, nothing is deleted. Run it again any time.
 
 | Command | Key | What happens |
 | --- | --- | --- |
-| `ze theme pick` | `SUPER + T` | a carousel of theme previews. Same key again closes it |
+| `ze theme pick` | `ALT + SHIFT + T` | a carousel of theme previews. Same key again closes it |
 | `ze theme set <name>` | | apply a theme. `"Tokyo Night"` and `tokyo-night` both work |
-| `ze bg pick` | `SUPER + W` | a carousel of the theme's wallpapers, then a question: Desktop, Login screen or Both |
-| `ze bg next` | `SUPER + SHIFT + W` | next wallpaper. Add `--login` or `--both` for the login screen |
+| `ze bg pick` | `ALT + SHIFT + W` | a carousel of the theme's wallpapers, then a question: Desktop, Login screen or Both |
+| `ze bg next` | `SUPER + W` | next wallpaper. Add `--login` or `--both` for the login screen |
 | | `SUPER + L` | lock the screen |
 
 Also there: `ze theme list`, `ze theme current`, `ze theme sync` (pull new

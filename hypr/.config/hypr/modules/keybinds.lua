@@ -15,9 +15,9 @@ hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd(launcher))
 hl.bind(mainMod .. " + SHIFT + SPACE", hl.dsp.exec_cmd(runner))
 
 -- Theme and wallpaper ----------------------------------------------------
-hl.bind(secondMod .. " + T", hl.dsp.exec_cmd("~/.local/bin/ze theme pick"))
-hl.bind(secondMod .. " + W", hl.dsp.exec_cmd("~/.local/bin/ze bg pick"))
-hl.bind(secondMod .. " + SHIFT + W", hl.dsp.exec_cmd("~/.local/bin/ze bg next"))
+hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd("~/.local/bin/ze theme pick"))
+hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("~/.local/bin/ze bg pick"))
+hl.bind(secondMod .. " + W", hl.dsp.exec_cmd("~/.local/bin/ze bg next"))
 hl.bind(secondMod .. " + L", hl.dsp.exec_cmd("loginctl lock-session"))
 
 -- exit-hyprland ----------------------------------------------------------

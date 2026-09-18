@@ -33,7 +33,7 @@ the name and turns spaces into hyphens, then looks for
 The theme is first copied to `~/.config/ze/current/next-theme/`, rendered
 there, and only then moved into place as `theme/`. A theme set that fails
 halfway leaves the previous theme untouched. A lock file stops two theme sets
-from running at once, so mashing `SUPER + T` twice does no harm.
+from running at once, so mashing `ALT + SHIFT + T` twice does no harm.
 
 ## Step 2: colours and templates
 
