@@ -1,0 +1,5 @@
+# Installed by zdots install.sh as /etc/sudoers.d/ze-browser-policy.
+# `ze theme set` is a menu action with no terminal for a password prompt, so this
+# single write may run passwordless. The argument is spelled out as six hex
+# digits, so the grant covers a colour and nothing else.
+%wheel ALL=(root) NOPASSWD: /usr/local/bin/ze-browser-policy [0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]

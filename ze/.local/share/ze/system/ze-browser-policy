@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Write the theme colour into the Chromium-family browser policy directories.
+# Installed by install.sh to /usr/local/bin (root-owned) with a sudoers rule
+# that lets `ze theme set` run it without a password, for exactly one
+# six-hex-digit argument and nothing else.
+#
+# Usage: ze-browser-policy <rrggbb>
+
+set -euo pipefail
+
+# Running as root: never resolve tools from a user-writable PATH
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin
+
+POLICY_DIRS=(
+  /etc/chromium/policies/managed
+  /etc/opt/chrome/policies/managed
+  /etc/brave/policies/managed
+)
+
+color="${1:-}"
+if [[ ! $color =~ ^[0-9a-f]{6}$ ]]; then
+  echo "usage: ze-browser-policy <rrggbb> (six lowercase hex digits)" >&2
+  exit 1
+fi
+
+if (( EUID != 0 )); then
+  exec sudo -n /usr/local/bin/ze-browser-policy "$color"
+fi
+
+failed=0
+for policy_dir in "${POLICY_DIRS[@]}"; do
+  [[ -d $policy_dir && ! -L $policy_dir ]] || continue
+
+  staged=$(mktemp)
+  printf '{"BrowserThemeColor": "#%s", "BrowserColorScheme": "device"}\n' "$color" >"$staged"
+  install -m 0644 -o root -g root -T "$staged" "$policy_dir/color.json" || failed=1
+  rm -f "$staged"
+done
+
+exit "$failed"
