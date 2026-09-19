@@ -65,7 +65,7 @@ In a carousel: arrows or Tab move, typing filters, Enter applies, Esc closes.
 In the clipboard history: typing filters, Enter pastes into the window
 underneath, Shift+Enter only copies, Ctrl+Enter opens an image in imv, Delete
 removes the entry, Shift+Delete or the Clear history button clears everything after a Yes/No prompt.
-Copies from KeePassXC are never recorded, and entries expire after 30 days.
+Copies from KeePassXC are never recorded, and the last 750 entries are kept.
 The clipboard itself survives closing the window you copied from, which
 Wayland does not do on its own; wl-clip-persist keeps a copy and serves it.
 
