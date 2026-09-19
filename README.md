@@ -38,7 +38,7 @@ run sudo. Plan for about 20 minutes. Most of that is pacman.
 3. Log out and back in. SDDM shows the `ze` greeter, Hyprland starts with the
    theme applied.
 
-The installer installs the 91 pacman packages and 6 AUR packages listed in
+The installer installs the 94 pacman packages and 6 AUR packages listed in
 `packages/`, enables sddm, NetworkManager and bluetooth, links every config
 into `$HOME` with GNU stow, and applies the theme. Anything already in the way
 is moved to `<name>.bak.<timestamp>`, nothing is deleted. Run it again any time.
@@ -66,6 +66,8 @@ In the clipboard history: typing filters, Enter pastes into the window
 underneath, Shift+Enter only copies, Ctrl+Enter opens an image in imv, Delete
 removes the entry, Shift+Delete or the Clear history button clears everything after a Yes/No prompt.
 Copies from KeePassXC are never recorded, and entries expire after 30 days.
+The clipboard itself survives closing the window you copied from, which
+Wayland does not do on its own; wl-clip-persist keeps a copy and serves it.
 
 ## How it works
 

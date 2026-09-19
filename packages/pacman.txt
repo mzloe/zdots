@@ -48,6 +48,7 @@ wl-clipboard
 flameshot
 grim
 cliphist
+wl-clip-persist
 wtype
 xdg-utils
 brightnessctl
