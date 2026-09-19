@@ -22,14 +22,13 @@ self=$(readlink -f "$0")
 theme=$(readlink -f "$(dirname "$self")/../clipboard.rasi")
 thumbs="${XDG_RUNTIME_DIR:-/tmp}/cliphist-thumbs"
 terminal_class="com.mitchellh.ghostty"
+mouse=(-hover-select -me-select-entry "" -me-accept-entry MousePrimary)
 
 toggle() {
-  # Same keybind again closes an open picker. The pattern matches only the rofi
-  # started here, so the app launcher is left alone.
-  if pkill -f "rofi .*clipboard.rasi"; then
+  if pkill -f "^rofi -show clipboard -modi clipboard:"; then
     exit 0
   fi
-  exec rofi -show clipboard -modi "clipboard:$self" -theme "$theme" -show-icons \
+  exec rofi -show clipboard -modi "clipboard:$self" -theme "$theme" -show-icons "${mouse[@]}" \
     -kb-accept-alt "" -kb-accept-custom "" -kb-delete-entry "" \
     -kb-remove-char-forward "Control+d" \
     -kb-custom-1 "Shift+Return" \
@@ -38,13 +37,13 @@ toggle() {
     -kb-custom-4 "Shift+Delete"
 }
 
-# Same small prompt as the wallpaper picker's Desktop / Login screen question.
 confirm() {
   local answer
-  answer=$(printf 'No\nYes\n' | rofi -dmenu -i \
+  answer=$(printf 'No\nYes\n' | rofi -dmenu -i "${mouse[@]}" \
     -mesg "Delete the entire clipboard history?" \
     -theme-str 'mainbox { children: [ "message", "listview" ]; } listview { lines: 2; fixed-height: false; } window { width: 360px; }')
   [[ $answer == "Yes" ]] && wipe
+  toggle
 }
 
 # Print a row. Extra rofi options follow the text after a NUL, as key/value
