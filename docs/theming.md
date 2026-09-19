@@ -132,6 +132,15 @@ These include the rendered file from their own config and only need a reload:
 btop only finds themes by name inside `~/.config/btop/themes/`, so `ze` keeps
 a symlink there called `current.theme` that points at the rendered file.
 
+### Flameshot
+
+Flameshot keeps its settings in `~/.config/flameshot/flameshot.ini` and rewrites
+that file itself, so a symlink to a rendered template would not survive the
+first settings change. Instead `ze` calls `flameshot config` with the accent as
+the main UI colour and the background as the contrast colour. Running
+instances watch the ini and repaint. Nothing happens when Flameshot is not
+installed.
+
 ### GTK
 
 Two things happen. The mode and the icons are set with gsettings

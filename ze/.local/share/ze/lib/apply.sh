@@ -11,6 +11,7 @@ ze_apply_all() {
   ze_apply_reloads
   ze_apply_btop
   ze_apply_gtk
+  ze_apply_flameshot
   ze_apply_browsers
   ze_apply_nvim
   ze_apply_zed
@@ -77,6 +78,17 @@ ze_set_ini_key() {
   else
     printf '%s=%s\n' "$key" "$value" >>"$file"
   fi
+}
+
+# Flameshot keeps its colours in its own ini and has a config subcommand to set
+# them, so no template: the capture toolbar takes the accent, its contrast
+# colour the background. Running instances watch the ini and repaint.
+ze_apply_flameshot() {
+  command -v flameshot >/dev/null || return 0
+  [[ -n $WAYLAND_DISPLAY || -n $DISPLAY ]] || return 0
+
+  timeout 5 flameshot config --maincolor "$(ze_color accent)" --contrastcolor "$(ze_color background)" >/dev/null 2>&1
+  return 0
 }
 
 # Chromium-family frame colour through a machine policy, so every profile of

@@ -97,3 +97,10 @@ hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true })
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true })
+
+-- Screenshots -----------------------------------------------------------
+hl.bind("Print", function()
+	local mon = hl.get_active_monitor()
+	hl.exec_cmd("flameshot screen --number " .. (mon and mon.id or 0) .. " --edit")
+end)
+hl.bind("SHIFT + Print", hl.dsp.exec_cmd("flameshot gui"))

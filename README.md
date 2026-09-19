@@ -7,7 +7,7 @@ ze theme set nord
 ```
 
 That one line recolours the terminal, the bar, the launcher, notifications,
-btop, GTK apps, Neovim, Zed, the browsers, the lock screen and the login
+btop, GTK apps, Flameshot, Neovim, Zed, the browsers, the lock screen and the login
 screen. It also swaps the wallpaper. 21 themes ship in the repo, most of them
 from omarchy, a few of my own.
 
@@ -38,7 +38,7 @@ run sudo. Plan for about 20 minutes. Most of that is pacman.
 3. Log out and back in. SDDM shows the `ze` greeter, Hyprland starts with the
    theme applied.
 
-The installer installs the 98 pacman packages and 7 AUR packages listed in
+The installer installs the 91 pacman packages and 6 AUR packages listed in
 `packages/`, enables sddm, NetworkManager and bluetooth, links every config
 into `$HOME` with GNU stow, and applies the theme. Anything already in the way
 is moved to `<name>.bak.<timestamp>`, nothing is deleted. Run it again any time.
@@ -53,6 +53,8 @@ is moved to `<name>.bak.<timestamp>`, nothing is deleted. Run it again any time.
 | `ze bg pick` | `ALT + SHIFT + W` | a carousel of the theme's wallpapers, then a question: Desktop, Login screen or Both |
 | `ze bg next` | `SUPER + W` | next wallpaper. Add `--login` or `--both` for the login screen |
 | | `SUPER + L` | lock the screen |
+| | `Print` | screenshot the monitor under the cursor, then Flameshot's editor |
+| | `SHIFT + Print` | pick a region first, then the editor |
 
 Also there: `ze theme list`, `ze theme current`, `ze theme sync` (pull new
 themes from omarchy), `ze bg set <image> [--login|--both]` and `ze bg restore`.

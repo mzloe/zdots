@@ -45,6 +45,8 @@ swaync
 rofi
 libnotify
 wl-clipboard
+flameshot
+grim
 xdg-utils
 brightnessctl
 
