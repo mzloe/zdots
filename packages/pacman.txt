@@ -47,6 +47,8 @@ libnotify
 wl-clipboard
 flameshot
 grim
+cliphist
+wtype
 xdg-utils
 brightnessctl
 

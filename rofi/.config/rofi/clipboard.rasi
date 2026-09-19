@@ -1,0 +1,78 @@
+/* Clipboard history picker (scripts/clipboard.sh). Colours come from the
+   active ze theme; the layout is its own: a thin filter line, big thumbnails,
+   no mode tabs, and a pinned Clear history button at the bottom. */
+
+@import "~/.config/ze/current/theme/rofi.rasi"
+
+* {
+    font:             "JetBrains Mono Nerd Font Propo Medium 10";
+    background-color: transparent;
+    text-color:       var(foreground);
+}
+
+window {
+    location:         center;
+    width:            520px;
+    border-radius:    10px;
+    background-color: var(background);
+    padding:          10px;
+}
+
+mainbox {
+    spacing:  8px;
+    children: [ "inputbar", "listview", "button-clear" ];
+}
+
+/* Typing filters the list; this is where the typed text shows. */
+inputbar {
+    children: [ "entry" ];
+    padding:  4px 10px;
+}
+entry {
+    placeholder:       "Filter…";
+    placeholder-color: var(selected);
+    cursor:            text;
+}
+
+listview {
+    columns:      1;
+    lines:        6;
+    fixed-height: false;
+    dynamic:      true;
+    cycle:        true;
+    scrollbar:    false;
+    spacing:      2px;
+}
+
+element {
+    padding:       6px 10px;
+    spacing:       10px;
+    border-radius: 8px;
+    cursor:        pointer;
+}
+element selected.normal {
+    background-color: var(selected);
+    text-color:       var(background);
+}
+element-icon {
+    size:   40px;
+    cursor: inherit;
+}
+element-text {
+    vertical-align: 0.5;
+    cursor:         inherit;
+    highlight:      bold;
+}
+
+/* A real button: clicking it fires the Shift+Delete action of the script. */
+button-clear {
+    expand:           false;
+    content:          "󰆴  Clear history";
+    padding:          8px;
+    border-radius:    8px;
+    background-color: var(background-alt);
+    horizontal-align: 0.5;
+    vertical-align:   0.5;
+    cursor:           pointer;
+    action:           "kb-custom-4";
+}

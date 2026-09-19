@@ -13,6 +13,7 @@ hl.bind(MAIN_MOD .. " + T", hl.dsp.exec_cmd("~/.config/hypr/scripts/toggle-wayba
 hl.bind(MAIN_MOD .. " + N", hl.dsp.exec_cmd("swaync-client -t"))
 hl.bind(MAIN_MOD .. " + SPACE", hl.dsp.exec_cmd(LAUNCHER))
 hl.bind(MAIN_MOD .. " + SHIFT + SPACE", hl.dsp.exec_cmd(RUNNER))
+hl.bind(SECOND_MOD .. " + V", hl.dsp.exec_cmd("~/.config/rofi/scripts/clipboard.sh toggle"))
 
 -- Theme and wallpaper ----------------------------------------------------
 hl.bind(MAIN_MOD .. " + SHIFT + T", hl.dsp.exec_cmd("~/.local/bin/ze theme pick"))

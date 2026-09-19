@@ -55,11 +55,17 @@ is moved to `<name>.bak.<timestamp>`, nothing is deleted. Run it again any time.
 | | `SUPER + L` | lock the screen |
 | | `Print` | screenshot the monitor under the cursor, then Flameshot's editor |
 | | `SHIFT + Print` | pick a region first, then the editor |
+| | `SUPER + V` | clipboard history, text and images. Same key again closes it |
 
 Also there: `ze theme list`, `ze theme current`, `ze theme sync` (pull new
 themes from omarchy), `ze bg set <image> [--login|--both]` and `ze bg restore`.
 
 In a carousel: arrows or Tab move, typing filters, Enter applies, Esc closes.
+
+In the clipboard history: typing filters, Enter pastes into the window
+underneath, Shift+Enter only copies, Ctrl+Enter opens an image in imv, Delete
+removes the entry, Shift+Delete or the Clear history button clears everything after a Yes/No prompt.
+Copies from KeePassXC are never recorded, and entries expire after 30 days.
 
 ## How it works
 
