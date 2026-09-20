@@ -182,7 +182,9 @@ return { repo = "folke/tokyonight.nvim", colorscheme = "tokyonight", background 
 ```
 
 `nvim/.config/nvim/init.lua` reads that file, installs the plugin with
-`vim.pack.add`, and applies the colorscheme. Instances that are already open
+`vim.pack.add`, and applies the colorscheme. The first time a theme needs a
+plugin that is not installed yet, Neovim asks before cloning it, since the
+repo name comes from the theme. Instances that are already open
 get a `SIGUSR1` and re-read it. A theme without a `neovim.lua` gets Neovim's
 built-in `default` colorscheme with the matching background. Drop a
 `neovim.lua` in omarchy's format into the theme directory to give it a real

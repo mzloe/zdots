@@ -12,6 +12,7 @@ vim.o.clipboard = "unnamedplus"
 -- `ze theme set` writes ~/.config/ze/current/theme/nvim.lua:
 --   { repo = "https://github.com/folke/tokyonight.nvim", colorscheme = "tokyonight-night", background = "dark" }
 -- The colorscheme plugin is fetched with the built-in package manager (vim.pack, nvim >= 0.12).
+-- The repo comes from the theme, so vim.pack keeps its confirmation prompt before cloning.
 local function apply_ze_theme()
 	local ok, theme = pcall(dofile, vim.fn.expand("~/.config/ze/current/theme/nvim.lua"))
 	if not ok or type(theme) ~= "table" then
@@ -19,7 +20,7 @@ local function apply_ze_theme()
 	end
 
 	if theme.repo and vim.pack then
-		vim.pack.add({ theme.repo }, { confirm = false })
+		vim.pack.add({ theme.repo })
 	end
 	if theme.background then
 		vim.o.background = theme.background
