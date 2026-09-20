@@ -19,9 +19,6 @@
     "metrics": false,
     "anthropic_retention": false
   },
-  "session": {
-    "trust_all_worktrees": true
-  },
   "vim_mode": true,
   "icon_theme": {
     "mode": "system",
