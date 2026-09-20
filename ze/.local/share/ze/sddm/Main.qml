@@ -23,7 +23,11 @@ Pane {
     font.pointSize: config.FontSize !== "" ? config.FontSize : parseInt(height / 80) || 13
     focus: true
 
-    readonly property bool hasVideo: config.BackgroundVideo !== undefined && config.BackgroundVideo !== ""
+    // current/theme.conf is written by the user's `ze`, so only the two paths
+    // it produces are loaded. Any other file or a URL there is ignored.
+    readonly property string backgroundSource:
+        /^current\/background\.(png|jpe?g|gif|bmp|webp)$/.test(config.Background || "") ? config.Background : ""
+    readonly property bool hasVideo: config.BackgroundVideo === "current/video.mp4"
 
     Item {
         id: background
@@ -32,7 +36,7 @@ Pane {
         AnimatedImage {
             id: backgroundImage
             anchors.fill: parent
-            source: config.Background || ""
+            source: root.backgroundSource
             fillMode: Image.PreserveAspectCrop
             asynchronous: true
             cache: true
@@ -45,7 +49,7 @@ Pane {
         MediaPlayer {
             id: player
             videoOutput: videoOutput
-            source: root.hasVideo ? Qt.resolvedUrl(config.BackgroundVideo) : ""
+            source: root.hasVideo ? Qt.resolvedUrl("current/video.mp4") : ""
             loops: MediaPlayer.Infinite
             Component.onCompleted: if (root.hasVideo) play()
         }
