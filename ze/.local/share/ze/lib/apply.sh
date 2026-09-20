@@ -42,6 +42,7 @@ ze_apply_gtk() {
   local mode gtk_theme prefer_dark icon_theme version
 
   mode=$(ze_color mode)
+  [[ $mode == light ]] || mode=dark
   if [[ $mode == light ]]; then
     gtk_theme=Adwaita prefer_dark=0
   else
@@ -65,6 +66,20 @@ ze_apply_gtk() {
     ze_set_ini_key "$HOME/.config/$version/settings.ini" gtk-icon-theme-name "$icon_theme"
     ze_set_ini_key "$HOME/.config/$version/settings.ini" gtk-application-prefer-dark-theme "$prefer_dark"
   done
+
+  ze_apply_root_gtk "$mode" "$icon_theme"
+}
+
+# Apps that run as root through pkexec (GParted) read /root's GTK settings, not
+# yours. A root-owned helper writes the mode and icon set there; install.sh puts
+# it in /usr/local/bin with a sudoers rule that allows exactly that call.
+ze_apply_root_gtk() {
+  local helper=/usr/local/bin/ze-root-gtk
+
+  [[ -x $helper ]] || return 0
+  sudo -n "$helper" "$1" "$2" ||
+    echo "ze: root GTK settings not applied (sudoers rule missing? run ze install --system)" >&2
+  return 0
 }
 
 # Replace `key=value` under [Settings], appending the key (and file) when missing

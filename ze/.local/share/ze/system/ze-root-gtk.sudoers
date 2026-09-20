@@ -1,0 +1,6 @@
+# Installed by zdots install.sh as /etc/sudoers.d/ze-root-gtk.
+# `ze theme set` may set root's GTK mode and icon theme without a password so
+# GParted matches the desktop. The argument list is a regular expression
+# (sudo 1.9.10+), matched against the whole command line: the mode word and one
+# icon-theme name, nothing else.
+%wheel ALL=(root) NOPASSWD: /usr/local/bin/ze-root-gtk ^(light|dark) [A-Za-z0-9][A-Za-z0-9._-]{0,63}$

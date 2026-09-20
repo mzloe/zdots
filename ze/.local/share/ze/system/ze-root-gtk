@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Give root the same GTK mode and icon set as you, so apps that run as root
+# through pkexec (GParted) look like the rest of the desktop instead of stock
+# light Adwaita. Installed by install.sh to /usr/local/bin (root-owned) with a
+# sudoers rule that lets `ze theme set` run it without a password, for exactly
+# `light|dark <icon-theme>` and nothing else.
+#
+# Only the mode and the icon theme carry over, not the palette from gtk.css:
+# root never reads a file you can write.
+#
+# Usage: ze-root-gtk <light|dark> <icon-theme>
+
+set -euo pipefail
+
+# Running as root: never resolve tools or temp files from user-controlled places
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin
+export TMPDIR=/tmp
+
+mode="${1:-}"
+icons="${2:-}"
+if (( $# != 2 )) || [[ $mode != light && $mode != dark ]] ||
+  [[ ! $icons =~ ^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$ ]]; then
+  echo "usage: ze-root-gtk <light|dark> <icon-theme>" >&2
+  exit 1
+fi
+[[ -d /usr/share/icons/$icons ]] || icons=Adwaita
+
+if (( EUID != 0 )); then
+  exec sudo -n /usr/local/bin/ze-root-gtk "$mode" "$icons"
+fi
+
+if [[ $mode == dark ]]; then
+  theme=Adwaita-dark prefer_dark=1
+else
+  theme=Adwaita prefer_dark=0
+fi
+
+for version in gtk-3.0 gtk-4.0; do
+  dir=/root/.config/$version
+  if [[ -L $dir || -L $dir/settings.ini ]]; then
+    echo "ze-root-gtk: $dir is a symlink, refusing" >&2
+    exit 1
+  fi
+  install -d -m 0700 -o root -g root "$dir"
+
+  staged=$(mktemp)
+  printf '[Settings]\ngtk-theme-name=%s\ngtk-icon-theme-name=%s\ngtk-application-prefer-dark-theme=%s\n' \
+    "$theme" "$icons" "$prefer_dark" >"$staged"
+  install -m 0644 -o root -g root -T "$staged" "$dir/settings.ini"
+  rm -f "$staged"
+done

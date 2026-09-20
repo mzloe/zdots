@@ -157,6 +157,13 @@ overrides reach GTK4 and libadwaita apps.
 A theme that names a Yaru variant the package does not ship (vantablack asks
 for Yaru-gray) falls back to plain Yaru.
 
+Apps that run as root through pkexec, GParted for one, read `/root`'s GTK
+settings rather than yours, so they came up in stock light Adwaita. A second
+root-owned helper, `/usr/local/bin/ze-root-gtk`, writes the mode and the icon
+set to `/root/.config/gtk-3.0/settings.ini` and `gtk-4.0/settings.ini`. Its
+sudoers rule allows exactly `light|dark <icon-theme>`. Only those two carry
+over, not the palette from `gtk.css`: root never reads a file you can write.
+
 ### Browsers
 
 Brave, Chromium and Chrome read their frame colour from a machine policy:

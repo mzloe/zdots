@@ -119,6 +119,15 @@ install_browser_policy() {
     /etc/chromium/policies/managed /etc/opt/chrome/policies/managed /etc/brave/policies/managed
 }
 
+# Apps run as root through pkexec (GParted) read /root's GTK settings, not yours:
+# root-owned helper + passwordless sudo for it, same shape as the browser one
+install_root_gtk() {
+  step "Installing root GTK helper (sudo)"
+  visudo -cf "$ZE_SYSTEM_PATH/ze-root-gtk.sudoers"
+  sudo install -m 0755 -o root -g root "$ZE_SYSTEM_PATH/ze-root-gtk" /usr/local/bin/ze-root-gtk
+  sudo install -m 0440 -o root -g root "$ZE_SYSTEM_PATH/ze-root-gtk.sudoers" /etc/sudoers.d/ze-root-gtk
+}
+
 # The greeter is copied once (root); current/ stays yours so ze can update the
 # colours and login wallpaper without sudo
 install_sddm_theme() {
@@ -149,6 +158,7 @@ apply_theme() {
 # The parts that live outside $HOME
 install_system() {
   install_browser_policy
+  install_root_gtk
   install_sddm_theme
 }
 
