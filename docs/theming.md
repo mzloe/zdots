@@ -219,7 +219,9 @@ copies it there once, and makes its `current/` directory owned by you. On a
 theme set, `ze` renders `sddm.conf.tpl` into `current/theme.conf` and copies
 the login wallpaper to `current/background.<ext>`. If a file with the same
 name and an `.mp4` extension sits next to the wallpaper, it is copied too and
-the greeter plays it as a video. None of this needs sudo.
+the greeter plays it as a video. None of this needs sudo. Because that
+directory is yours, the greeter only loads those two paths; any other file or
+a URL in `theme.conf` is ignored.
 
 Webp wallpapers need `qt6-imageformats`, which is in the package list.
 
@@ -244,3 +246,30 @@ never touches them.
 
 At login, Hyprland's autostart runs `ze bg restore`, which starts awww and
 draws whatever `background` points at.
+
+## Trust boundaries
+
+What runs with more than your own rights, and what it accepts from you.
+
+- **Two sudo rules, two helpers.** `ze-browser-policy` and `ze-root-gtk` are
+  root-owned files in `/usr/local/bin`. Rules in `/etc/sudoers.d/` let the
+  wheel group run them without a password, with the arguments spelled out: six
+  hex digits for the browser colour, `light|dark` plus one icon-theme name for
+  GTK. Both helpers reset `PATH` and `TMPDIR`, validate their arguments again,
+  and write only the files named in their header comments. Nothing else in
+  `ze` uses sudo. `install.sh` runs `visudo -cf` on each rule before
+  installing it, so a typo cannot lock sudo.
+- **The login greeter reads files you own.** `/usr/share/sddm/themes/ze/current/`
+  belongs to your user so the login wallpaper can change without sudo. The
+  greeter runs as the `sddm` user before anyone logs in, and it loads only
+  `current/background.<ext>` and `current/video.mp4`. What is left is that it
+  decodes an image and a video you chose, with Qt's image plugins and ffmpeg.
+  `ze bg set` checks that the file really is an image before copying it.
+- **Theme files can be code.** Hyprland runs a theme's `hyprland.lua`,
+  hyprlock and ghostty run commands named in their conf, and Neovim clones the
+  repo named in `neovim.lua`. The themes in this repo were read before they
+  were committed. `ze theme sync` lists those files and shows the diff before
+  you commit, and Neovim asks before installing a colorscheme plugin. Read a
+  theme someone sends you.
+- **AUR packages are built from source you have not seen.** The installer
+  shows each PKGBUILD, as makepkg does. The pacman packages are signed.
