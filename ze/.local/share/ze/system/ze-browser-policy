@@ -9,8 +9,9 @@
 
 set -euo pipefail
 
-# Running as root: never resolve tools from a user-writable PATH
+# Running as root: never resolve tools or temp files from user-controlled places
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin
+export TMPDIR=/tmp
 
 POLICY_DIRS=(
   /etc/chromium/policies/managed
