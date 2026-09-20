@@ -32,6 +32,7 @@ ze_bg_set() {
   [[ -n ${ZE_BG_ARGS[0]:-} ]] || ze_die "usage: ze bg set <image> [--login | --both]"
   background=$(realpath "${ZE_BG_ARGS[0]}")
   [[ -f $background ]] || ze_die "file does not exist: $background"
+  ze_bg_check_image "$background"
 
   mkdir -p "$ZE_CURRENT_PATH"
 
@@ -44,6 +45,18 @@ ze_bg_set() {
     ln -nsf "$background" "$ZE_LOGIN_BACKGROUND_LINK"
     ze_apply_sddm
   fi
+}
+
+# The file may end up on the login screen, world-readable and decoded by the
+# greeter, so it has to be an image of a type the greeter is allowed to load
+ze_bg_check_image() {
+  local ext=${1##*.}
+  ext=${ext,,}
+  case "$ext" in
+    jpg | jpeg | png | gif | bmp | webp) ;;
+    *) ze_die "not a supported image type (jpg, jpeg, png, gif, bmp, webp): $1" ;;
+  esac
+  [[ $(file -Lb --mime-type -- "$1") == image/* ]] || ze_die "not an image: $1"
 }
 
 ze_bg_draw() {

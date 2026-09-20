@@ -218,7 +218,7 @@ ze_apply_sddm() {
     printf 'Background="current/background.%s"\n' "$ext" >>"$tmp"
 
     video="${background%.*}.mp4"
-    if [[ -f $video ]]; then
+    if [[ -f $video && $(file -Lb --mime-type -- "$video") == video/* ]]; then
       cp "$video" "$ZE_SDDM_CURRENT_PATH/video.mp4"
       printf 'BackgroundVideo="current/video.mp4"\n' >>"$tmp"
     fi
