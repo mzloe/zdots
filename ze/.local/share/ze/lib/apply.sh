@@ -49,8 +49,9 @@ ze_apply_gtk() {
   fi
 
   # A Yaru variant the package doesn't ship (e.g. Yaru-gray) falls back to plain Yaru
+  # A plain directory name only, no path tricks, and one that is installed
   icon_theme=$(cat "$ZE_CURRENT_THEME_PATH/icons.theme" 2>/dev/null || echo Yaru)
-  [[ -d /usr/share/icons/$icon_theme ]] || icon_theme=Yaru
+  [[ $icon_theme =~ ^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$ && -d /usr/share/icons/$icon_theme ]] || icon_theme=Yaru
   [[ -d /usr/share/icons/$icon_theme ]] || icon_theme=Adwaita
 
   if [[ -n $DBUS_SESSION_BUS_ADDRESS ]] && command -v gsettings >/dev/null; then
@@ -68,13 +69,15 @@ ze_apply_gtk() {
 
 # Replace `key=value` under [Settings], appending the key (and file) when missing
 ze_set_ini_key() {
-  local file="$1" key="$2" value="$3"
+  local file="$1" key="$2" value="$3" escaped
 
   mkdir -p "$(dirname "$file")"
   [[ -f $file ]] || printf '[Settings]\n' >"$file"
 
   if grep -q "^$key=" "$file"; then
-    sed -i "s|^$key=.*|$key=$value|" "$file"
+    # Values are checked before they get here; keep sed's own characters inert anyway
+    escaped=$(printf '%s' "$value" | sed 's/[&|\\]/\\&/g')
+    sed -i "s|^$key=.*|$key=$escaped|" "$file"
   else
     printf '%s=%s\n' "$key" "$value" >>"$file"
   fi
