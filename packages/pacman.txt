@@ -24,6 +24,7 @@ ntfs-3g
 ntfsprogs
 fuse3
 gparted
+xorg-xhost
 
 # Desktop
 hyprland
