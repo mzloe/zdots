@@ -1,7 +1,11 @@
 #!/bin/bash
 
 # Set up a fresh Arch install from this repo. Safe to re-run (also as `ze install`).
-# Usage: ./install.sh [--no-packages] [theme-name]
+# Usage: ./install.sh [--no-packages | --stow | --system] [theme-name]
+#   --no-packages  everything but pacman and the AUR
+#   --stow         only relink the configs into $HOME
+#   --system       only refresh what lives outside $HOME: the SDDM greeter and
+#                  the sudo helpers, then re-apply the theme through them
 
 set -euo pipefail
 
@@ -10,14 +14,17 @@ ZE_SYSTEM_PATH="$ZDOTS_PATH/ze/.local/share/ze/system"
 DEFAULT_THEME="gruvbox-light"
 THEME=""
 INSTALL_PACKAGES=true
+MODE=full
 
 PACKAGES=(ze hypr hyprlock hypridle waybar rofi swaync ghostty btop fastfetch gtk nvim zed)
 
 for arg in "$@"; do
   case "$arg" in
     --no-packages) INSTALL_PACKAGES=false ;;
+    --stow) MODE=stow ;;
+    --system) MODE=system ;;
     -h | --help)
-      echo "Usage: ./install.sh [--no-packages] [theme-name]"
+      sed -n '4,8p' "$0" | sed 's/^# \{0,1\}//'
       exit 0
       ;;
     *) THEME="$arg" ;;
@@ -139,11 +146,32 @@ apply_theme() {
   "$HOME/.local/bin/ze" theme set "$THEME"
 }
 
-[[ $INSTALL_PACKAGES == true ]] && install_packages
-command -v stow >/dev/null || { echo "stow is not installed (run without --no-packages)" >&2; exit 1; }
-stow_packages
-install_browser_policy
-install_sddm_theme
-apply_theme
+# The parts that live outside $HOME
+install_system() {
+  install_browser_policy
+  install_sddm_theme
+}
 
-step "Done. Log out and back in (or reboot) to start Hyprland with the new setup."
+need_stow() {
+  command -v stow >/dev/null || { echo "stow is not installed (run without --no-packages)" >&2; exit 1; }
+}
+
+case "$MODE" in
+  stow)
+    need_stow
+    stow_packages
+    ;;
+  system)
+    install_system
+    apply_theme
+    step "Done."
+    ;;
+  full)
+    [[ $INSTALL_PACKAGES == true ]] && install_packages
+    need_stow
+    stow_packages
+    install_system
+    apply_theme
+    step "Done. Log out and back in (or reboot) to start Hyprland with the new setup."
+    ;;
+esac

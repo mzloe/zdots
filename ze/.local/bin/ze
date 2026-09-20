@@ -4,7 +4,7 @@
 #
 #   ze theme set <name> | list | pick | current | sync | color <key>|--all
 #   ze bg    set <file> | next | pick | restore
-#   ze install [--no-packages] [theme-name]
+#   ze install [--no-packages | --stow | --system] [theme-name]
 
 set -o pipefail
 

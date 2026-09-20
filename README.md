@@ -43,8 +43,10 @@ The installer installs the 94 pacman packages and 6 AUR packages listed in
 into `$HOME` with GNU stow, and applies the theme. Anything already in the way
 is moved to `<name>.bak.<timestamp>`, nothing is deleted. The pacman packages
 install unattended; the AUR builds show you each PKGBUILD first, as makepkg
-does. Run it again any time.
-`ze install --no-packages` does the same without touching packages.
+does. Run it again any time. `ze install --no-packages` does the same without
+touching packages, `ze install --stow` only relinks the configs, and
+`ze install --system` only refreshes what lives outside your home: the SDDM
+greeter and the sudo helpers.
 
 ## Everyday use
 
