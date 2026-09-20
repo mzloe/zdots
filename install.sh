@@ -33,16 +33,25 @@ step() {
   printf '\n\e[1;34m==>\e[0m \e[1m%s\e[0m\n' "$1"
 }
 
+# One name per line, comments and blank lines dropped. A line starting with '-'
+# would reach pacman as an option, so it is an error rather than a package.
 package_list() {
-  sed -E 's/#.*//; /^[[:space:]]*$/d' "$1"
+  local names
+  names=$(sed -E 's/#.*//; s/^[[:space:]]+//; s/[[:space:]]+$//; /^$/d' "$1")
+  if grep -q '^-' <<<"$names"; then
+    echo "$1: a package name cannot start with '-'" >&2
+    return 1
+  fi
+  printf '%s\n' "$names"
 }
 
 install_packages() {
-  local packages
+  local packages names
 
   step "Installing pacman packages"
-  mapfile -t packages < <(package_list "$ZDOTS_PATH/packages/pacman.txt")
-  sudo pacman -Syu --needed --noconfirm "${packages[@]}"
+  names=$(package_list "$ZDOTS_PATH/packages/pacman.txt")
+  mapfile -t packages <<<"$names"
+  sudo pacman -Syu --needed --noconfirm -- "${packages[@]}"
 
   if ! command -v yay >/dev/null; then
     step "Installing yay"
@@ -56,7 +65,8 @@ install_packages() {
 
   # AUR builds are unsigned, so each PKGBUILD is shown for review, as yay does by default
   step "Installing AUR packages"
-  mapfile -t packages < <(package_list "$ZDOTS_PATH/packages/aur.txt")
+  names=$(package_list "$ZDOTS_PATH/packages/aur.txt")
+  mapfile -t packages <<<"$names"
   yay -S --needed "${packages[@]}"
 
   step "Enabling services"
