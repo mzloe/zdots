@@ -71,6 +71,11 @@ themes/my-theme/
   btop.theme, ghostty.conf, ...   optional. Hand-written files that replace the template output
 ```
 
+Four of those are code, not colours: Hyprland runs `hyprland.lua`, hyprlock
+and ghostty run commands named in `hyprlock.conf` and `ghostty.conf`, and
+Neovim clones the repo named in `neovim.lua`. Read them before you drop a theme
+someone sent you into this directory.
+
 1. Create the directory and copy a `colors.toml` from a theme that is close to
    what you want. Any of the 21 works as a starting point.
 2. Change the colours. `mode` is `"dark"` or `"light"`. `accent`,
@@ -141,7 +146,6 @@ Run `ze theme set "$(ze theme current)"` to render and check the result.
 
 ```sh
 ze theme sync
-git diff --stat
 git add -A ze/.local/share/ze/themes && git commit -m "Sync themes from omarchy"
 ```
 
@@ -150,6 +154,12 @@ clone, only that directory) and copies every theme over. It adds and updates.
 It never deletes, so your own themes, your extra wallpapers and any edits you
 made to an omarchy theme's files stay put, unless omarchy changed that same
 file, in which case the diff shows it and you decide.
+
+Nothing is applied until you commit. Like makepkg showing a PKGBUILD, sync
+lists what changed, points out any file that is code rather than colours
+(`hyprland.lua`, `hyprlock.conf`, `ghostty.conf`, `neovim.lua`), and offers
+the diff. Upstream is pulled straight from omarchy's default branch, so that
+read is your review.
 
 What sync leaves out:
 
