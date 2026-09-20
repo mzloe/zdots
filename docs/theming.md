@@ -1,8 +1,12 @@
 # What a theme set does
 
-`ze theme set <name>` is one command that ends with every app on the desktop
-in the same colours. This page walks through what happens in between, in the
-order it happens, and where each file lands.
+```sh
+ze theme set tokyo-night
+```
+
+Two seconds later every app on the desktop is in the same colours. This page
+is the two seconds, in order, with the file each step writes. Read it top to
+bottom once, then use the headings to jump back.
 
 ## The short version
 
@@ -10,11 +14,11 @@ order it happens, and where each file lands.
 2. Every template in `templates/` is rendered into that directory with the
    theme's colours.
 3. Each app is told to reload. Every app's own config includes the rendered
-   file, so the apps never carry a palette of their own.
-4. The wallpapers are reset: desktop to the theme's first one, login screen to
-   the theme's `login.*` if it has one.
+   file, so no app carries a palette of its own.
+4. The wallpapers are reset: desktop to the theme's first one, login screen
+   to the theme's `login.*` if it has one.
 
-Everything lives under `~/.config/ze/current/`:
+Everything lands under one directory:
 
 ```
 ~/.config/ze/current/
@@ -26,18 +30,18 @@ Everything lives under `~/.config/ze/current/`:
 
 ## Step 1: staging the theme
 
-`ze theme set` accepts `tokyo-night` as well as `"Tokyo Night"`. It lowercases
-the name and turns spaces into hyphens, then looks for
+`ze theme set` takes `tokyo-night` or `"Tokyo Night"`. It lowercases the
+name, turns spaces into hyphens, and looks for
 `ze/.local/share/ze/themes/<name>/`.
 
-The theme is first copied to `~/.config/ze/current/next-theme/`, rendered
-there, and only then moved into place as `theme/`. A theme set that fails
-halfway leaves the previous theme untouched. A lock file stops two theme sets
-from running at once, so mashing `ALT + SHIFT + T` twice does no harm.
+The theme is copied to `~/.config/ze/current/next-theme/` first, rendered
+there, and only then moved into place as `theme/`. A theme set that dies
+halfway leaves the old theme untouched. A lock file stops two theme sets from
+running at once, so mashing `ALT + SHIFT + T` does no harm.
 
 ## Step 2: colours and templates
 
-A theme's palette is `colors.toml`. This is tokyo-night's:
+A theme's palette is its `colors.toml`. This is tokyo-night's:
 
 ```toml
 mode = "dark"
@@ -73,26 +77,25 @@ bright_blue = "#7da6ff"
 bright_magenta = "#bb9af7"
 ```
 
-Not every key has to be there. `lib/colors.sh` fills in what is missing: a
-missing `dark_background` is derived from `background`, `purple` and `magenta`
-are aliases of each other, omarchy's older key names still resolve, and `mode`
-is guessed from the background's brightness when the file does not say. The
-rules are omarchy's, so an omarchy theme resolves to the palette it was
-designed with.
+Not every key has to be there. `lib/colors.sh` fills in the gaps: a missing
+`dark_background` is derived from `background`, `purple` and `magenta` are
+aliases, omarchy's older key names still resolve, and `mode` is guessed from
+the background's brightness when the file does not say. The rules are
+omarchy's, so an omarchy theme resolves to the palette it was designed with.
 
-To see the full resolved palette of the current theme:
+To see the whole resolved palette:
 
 ```sh
 ze theme color --all
 ze theme color accent
 ```
 
-Templates are the files in `ze/.local/share/ze/templates/`, one per app:
+Templates live in `ze/.local/share/ze/templates/`, one per app:
 
 ```
-btop.theme.tpl   ghostty.conf.tpl  gtk.css.tpl      hyprland.lua.tpl
-hyprlock.conf.tpl  rofi.rasi.tpl   sddm.conf.tpl    swaync.css.tpl
-t3code.json.tpl  waybar.css.tpl    zed.json.tpl
+btop.theme.tpl     ghostty.conf.tpl   gtk.css.tpl       hyprland.lua.tpl
+hyprlock.conf.tpl  rofi.rasi.tpl      sddm.conf.tpl     swaync.css.tpl
+t3code.json.tpl    waybar.css.tpl     zed.json.tpl
 ```
 
 `btop.theme.tpl` becomes `~/.config/ze/current/theme/btop.theme`, and so on.
@@ -105,16 +108,18 @@ Inside a template these placeholders work:
 | `{{ accent_rgb }}` | `122,162,247` |
 | `{{ mix background accent 20% }}` | background blended 20% towards accent |
 | `{{ hypr_gradient accent muted }}` | a Hyprland gradient string, `muted` as fallback |
-| `{{ gradient_start accent }}` | the first colour of that gradient |
+
+There is also `{{ gradient_start accent }}` for the first colour of that
+gradient.
 
 A file the theme ships itself wins over the template. If a theme directory
 already contains a `btop.theme`, the template is not rendered for it.
 
 ## Step 3: telling the apps
 
-Each app is handled by a function in `lib/apply.sh`. Every one of them is a
-no-op when the app is not installed, so a program you install next month is
-themed on your next theme set.
+Each app has a function in `lib/apply.sh`. Every one of them does nothing
+when the app is not installed, so a program you install next month is themed
+on your next theme set.
 
 ### Hyprland, ghostty, rofi, waybar, swaync, btop
 
@@ -124,22 +129,20 @@ These include the rendered file from their own config and only need a reload:
 | --- | --- | --- |
 | Hyprland | `modules/theme.lua` does `dofile()` on the rendered `hyprland.lua` | `hyprctl reload` |
 | ghostty | `config-file = ?~/.config/ze/current/theme/ghostty.conf` | `SIGUSR2` |
-| rofi | `@import "~/.config/ze/current/theme/rofi.rasi"` | none needed, rofi reads it on launch |
+| rofi | `@import "~/.config/ze/current/theme/rofi.rasi"` | none, rofi reads it on launch |
 | waybar | `@import "../ze/current/theme/waybar.css"` | `SIGUSR2` |
 | swaync | `@import "../ze/current/theme/swaync.css"` | `swaync-client -rs` |
-| btop | `color_theme = "current"` | `SIGUSR2` |
 
-btop only finds themes by name inside `~/.config/btop/themes/`, so `ze` keeps
-a symlink there called `current.theme` that points at the rendered file.
+btop is the odd one. It only finds themes by name inside
+`~/.config/btop/themes/`, so `ze` keeps a symlink there called
+`current.theme` that points at the rendered file, and sends `SIGUSR2`.
 
 ### Flameshot
 
-Flameshot keeps its settings in `~/.config/flameshot/flameshot.ini` and rewrites
-that file itself, so a symlink to a rendered template would not survive the
-first settings change. Instead `ze` calls `flameshot config` with the accent as
-the main UI colour and the background as the contrast colour. Running
-instances watch the ini and repaint. Nothing happens when Flameshot is not
-installed.
+Flameshot rewrites its own `flameshot.ini`, so a symlink to a rendered file
+would not survive the first settings change. Instead `ze` runs
+`flameshot config` with the accent as the main colour and the background as
+the contrast colour. Running instances watch the ini and repaint.
 
 ### GTK
 
@@ -150,33 +153,35 @@ Yaru variant named in the theme's `icons.theme`) and written to
 shows the same thing. Then `gtk.css` in both directories imports the rendered
 `gtk.css`, which overrides Adwaita's named colours with the palette.
 
-Honest limit: GTK3 apps such as Thunar have Adwaita's colours compiled in, so
-they only follow the light or dark switch and the icon set. The colour
-overrides reach GTK4 and libadwaita apps.
+The limit, stated plainly. GTK3 apps such as Thunar have Adwaita's colours
+compiled in, so they only follow the light or dark switch and the icon set.
+The colour overrides reach GTK4 and libadwaita apps.
 
 A theme that names a Yaru variant the package does not ship (vantablack asks
-for Yaru-gray) falls back to plain Yaru.
+for Yaru-gray) falls back to plain Yaru. The name has to be a plain directory
+name; anything else also falls back.
 
 Apps that run as root through pkexec, GParted for one, read `/root`'s GTK
-settings rather than yours, so they came up in stock light Adwaita. A second
-root-owned helper, `/usr/local/bin/ze-root-gtk`, writes the mode and the icon
-set to `/root/.config/gtk-3.0/settings.ini` and `gtk-4.0/settings.ini`. Its
-sudoers rule allows exactly `light|dark <icon-theme>`. Only those two carry
-over, not the palette from `gtk.css`: root never reads a file you can write.
+settings rather than yours, so they used to come up in stock light Adwaita.
+A second root-owned helper, `/usr/local/bin/ze-root-gtk`, writes the mode and
+the icon set to `/root/.config/gtk-3.0/settings.ini` and
+`gtk-4.0/settings.ini`. Its sudoers rule allows exactly
+`light|dark <icon-theme>`. Only those two carry over, not the palette from
+`gtk.css`. Root never reads a file you can write.
 
 ### Browsers
 
 Brave, Chromium and Chrome read their frame colour from a machine policy:
 `/etc/brave/policies/managed/color.json`, `/etc/chromium/...`,
 `/etc/opt/chrome/...`. Writing there needs root, so `install.sh` puts a small
-root-owned helper at `/usr/local/bin/ze-browser-policy` and a sudoers rule that
-allows exactly one call: that helper with a six-digit hex colour as its only
-argument. `ze theme set` runs it through `sudo -n`, so there is no password
-prompt, and then asks running browsers to reload their policies.
+root-owned helper at `/usr/local/bin/ze-browser-policy` and a sudoers rule
+that allows exactly one call: that helper with a six-digit hex colour as its
+only argument. `ze theme set` runs it through `sudo -n`, so there is no
+password prompt, then asks running browsers to reload their policies.
 
-The colour is the theme's `chromium.theme` file if it has one, else the
-background. Zen and Firefox have no such policy and only follow the GTK light or
-dark switch.
+The colour is the theme's `chromium.theme` if it has one, else the
+background. Zen and Firefox have no such policy and only follow the GTK
+light or dark switch.
 
 ### Neovim
 
@@ -190,38 +195,38 @@ return { repo = "folke/tokyonight.nvim", colorscheme = "tokyonight", background 
 
 `nvim/.config/nvim/init.lua` reads that file, installs the plugin with
 `vim.pack.add`, and applies the colorscheme. The first time a theme needs a
-plugin that is not installed yet, Neovim asks before cloning it, since the
-repo name comes from the theme. Instances that are already open
-get a `SIGUSR1` and re-read it. A theme without a `neovim.lua` gets Neovim's
-built-in `default` colorscheme with the matching background. Drop a
-`neovim.lua` in omarchy's format into the theme directory to give it a real
-one.
+plugin that is not installed yet, Neovim asks before cloning it, because the
+repo name comes from the theme. Open instances get a `SIGUSR1` and re-read
+the file. A theme without a `neovim.lua` gets Neovim's built-in `default`
+colorscheme in the matching background.
 
 ### Zed and T3 Code
 
 Both take a whole theme file. Zed's is rendered to
 `~/.config/zed/themes/ze.json` and `zed/.config/zed/settings.json` selects
 `"Ze"`, so Zed recolours on the spot. T3 Code's goes to
-`~/.t3/userdata/themes/ze.json`. Pick "ze" once in its appearance settings and
-it follows from then on.
+`~/.t3/userdata/themes/ze.json`. Pick "ze" once in its appearance settings
+and it follows from then on.
 
 ### hyprlock and hypridle
 
 `hyprlock/.config/hypr/hyprlock.conf` sources the rendered `hyprlock.conf`:
-the desktop wallpaper blurred, the time and date, and a password field in the
-theme's colours. hypridle locks after 5 minutes, turns the screen off at 10,
-suspends at 30, and locks before sleep. `SUPER + L` locks now.
+the desktop wallpaper blurred, the time and date, and a password field in
+the theme's colours. hypridle locks after 5 minutes, turns the screen off at
+10, suspends at 30, and locks before sleep. `SUPER + L` locks now.
 
 ### SDDM
 
-The greeter is a small Qt6 theme at `/usr/share/sddm/themes/ze`. `install.sh`
-copies it there once, and makes its `current/` directory owned by you. On a
-theme set, `ze` renders `sddm.conf.tpl` into `current/theme.conf` and copies
-the login wallpaper to `current/background.<ext>`. If a file with the same
-name and an `.mp4` extension sits next to the wallpaper, it is copied too and
-the greeter plays it as a video. None of this needs sudo. Because that
-directory is yours, the greeter only loads those two paths; any other file or
-a URL in `theme.conf` is ignored.
+The greeter is a small Qt6 theme at `/usr/share/sddm/themes/ze`.
+`install.sh` copies it there once and makes its `current/` directory owned
+by you. On a theme set, `ze` renders `sddm.conf.tpl` into
+`current/theme.conf` and copies the login wallpaper to
+`current/background.<ext>`. If a file with the same name and an `.mp4`
+extension sits next to the wallpaper, it is copied too and the greeter plays
+it as a video. None of this needs sudo.
+
+Because that directory is yours, the greeter loads only those two paths. Any
+other file or a URL in `theme.conf` is ignored.
 
 Webp wallpapers need `qt6-imageformats`, which is in the package list.
 
@@ -234,14 +239,14 @@ Two wallpapers are tracked, both as symlinks in `~/.config/ze/current/`:
 - `login-background`, the login-screen one, copied into the SDDM theme.
 
 A theme set points the desktop at the theme's first wallpaper (sorted by
-name, which is why they are numbered `0-`, `1-`, `2-`) and the login screen at
-the theme's `login.*` if it has one, else the same wallpaper. From there,
+name, which is why they are numbered `0-`, `1-`, `2-`) and the login screen
+at the theme's `login.*` if it has one, else the same wallpaper. From there,
 `ze bg next`, `ze bg set` and `ze bg pick` take `--login` or `--both` to move
 one or both.
 
-A theme's wallpapers are its `backgrounds/` directory plus anything you put in
-`ze/.local/share/ze/backgrounds/<theme>/`. The second place is for wallpapers
-you want to keep out of the theme directory, for instance so `ze theme sync`
+A theme's wallpapers are its `backgrounds/` directory plus anything you put
+in `ze/.local/share/ze/backgrounds/<theme>/`. The second place is for
+wallpapers you want to keep out of the theme directory, so `ze theme sync`
 never touches them.
 
 At login, Hyprland's autostart runs `ze bg restore`, which starts awww and
@@ -253,23 +258,24 @@ What runs with more than your own rights, and what it accepts from you.
 
 - **Two sudo rules, two helpers.** `ze-browser-policy` and `ze-root-gtk` are
   root-owned files in `/usr/local/bin`. Rules in `/etc/sudoers.d/` let the
-  wheel group run them without a password, with the arguments spelled out: six
-  hex digits for the browser colour, `light|dark` plus one icon-theme name for
-  GTK. Both helpers reset `PATH` and `TMPDIR`, validate their arguments again,
-  and write only the files named in their header comments. Nothing else in
-  `ze` uses sudo. `install.sh` runs `visudo -cf` on each rule before
-  installing it, so a typo cannot lock sudo.
-- **The login greeter reads files you own.** `/usr/share/sddm/themes/ze/current/`
-  belongs to your user so the login wallpaper can change without sudo. The
-  greeter runs as the `sddm` user before anyone logs in, and it loads only
-  `current/background.<ext>` and `current/video.mp4`. What is left is that it
-  decodes an image and a video you chose, with Qt's image plugins and ffmpeg.
-  `ze bg set` checks that the file really is an image before copying it.
+  wheel group run them without a password, with the arguments spelled out:
+  six hex digits for the browser colour, `light|dark` plus one icon-theme
+  name for GTK. Both helpers reset `PATH` and `TMPDIR`, validate their
+  arguments again, and write only the files named in their header comments.
+  Nothing else in `ze` uses sudo. `install.sh` runs `visudo -cf` on each
+  rule before installing it, so a typo cannot lock sudo.
+- **The login greeter reads files you own.**
+  `/usr/share/sddm/themes/ze/current/` belongs to your user so the login
+  wallpaper can change without sudo. The greeter runs as the `sddm` user
+  before anyone logs in, and it loads only `current/background.<ext>` and
+  `current/video.mp4`. What is left is that it decodes an image and a video
+  you chose, with Qt's image plugins and ffmpeg. `ze bg set` checks that the
+  file really is an image before copying it.
 - **Theme files can be code.** Hyprland runs a theme's `hyprland.lua`,
-  hyprlock and ghostty run commands named in their conf, and Neovim clones the
-  repo named in `neovim.lua`. The themes in this repo were read before they
-  were committed. `ze theme sync` lists those files and shows the diff before
-  you commit, and Neovim asks before installing a colorscheme plugin. Read a
-  theme someone sends you.
+  hyprlock and ghostty run commands named in their conf, and Neovim clones
+  the repo named in `neovim.lua`. The themes in this repo were read before
+  they were committed. `ze theme sync` lists those files and shows the diff
+  before you commit, and Neovim asks before installing a colorscheme plugin.
+  Read a theme someone sends you.
 - **AUR packages are built from source you have not seen.** The installer
   shows each PKGBUILD, as makepkg does. The pacman packages are signed.

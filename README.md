@@ -1,90 +1,57 @@
 # zdots
 
-My Arch + Hyprland desktop, plus `ze`, the command that repaints all of it.
+My Arch + Hyprland desktop, and `ze`, the one command that repaints all of it.
 
 ```sh
 ze theme set nord
 ```
 
-That one line recolours the terminal, the bar, the launcher, notifications,
-btop, GTK apps, Flameshot, Neovim, Zed, the browsers, the lock screen and the login
-screen. It also swaps the wallpaper. 21 themes ship in the repo, most of them
-from omarchy, a few of my own.
+Terminal, bar, launcher, notifications, btop, GTK apps, Flameshot, Neovim,
+Zed, the browsers, the lock screen, the login screen, the wallpaper. One
+command, 21 themes, nothing left in the old colours.
 
-The name is short on purpose. It sounds like "the", so the commands read as
-sentences: "ze theme set", "ze bg next".
+`ze` is pronounced like "the", so the commands read as sentences. "ze theme
+set." "ze bg next." That is the whole joke and I am keeping it.
 
 ## Install
 
-Start from a fresh Arch install with a network connection and a user that can
-run sudo. Plan for about 20 minutes. Most of that is pacman.
+```sh
+git clone https://github.com/mzloe/zdots.git ~/workspace/personal/zdots
+cd ~/workspace/personal/zdots && ./install.sh
+```
 
-1. Clone the repo. It must stay where you clone it, because every config is a
-   symlink into it.
+Fresh Arch, a user that can sudo, about 20 minutes. Log out and back in when
+it finishes. `./install.sh tokyo-night` starts with a theme other than
+gruvbox-light. What the installer does, every flag, and how to re-run one part
+of it: [docs/install.md](docs/install.md).
 
-   ```sh
-   git clone https://github.com/mzloe/zdots.git ~/workspace/personal/zdots
-   cd ~/workspace/personal/zdots
-   ```
+## Every day
 
-2. Run the installer. Pass a theme name to start with something other than
-   gruvbox-light.
+| Press | Get |
+| --- | --- |
+| `ALT + SHIFT + T` | a carousel of theme previews |
+| `ALT + SHIFT + W` | a carousel of the theme's wallpapers |
+| `SUPER + W` | the next wallpaper |
+| `SUPER + V` | clipboard history, text and images |
+| `Print` | a screenshot, already open in Flameshot's editor |
 
-   ```sh
-   ./install.sh
-   ./install.sh tokyo-night
-   ```
-
-3. Log out and back in. SDDM shows the `ze` greeter, Hyprland starts with the
-   theme applied.
-
-The installer installs the 94 pacman packages and 6 AUR packages listed in
-`packages/`, enables sddm, NetworkManager and bluetooth, links every config
-into `$HOME` with GNU stow, and applies the theme. Anything already in the way
-is moved to `<name>.bak.<timestamp>`, nothing is deleted. The pacman packages
-install unattended; the AUR builds show you each PKGBUILD first, as makepkg
-does. Run it again any time. `ze install --no-packages` does the same without
-touching packages, `ze install --stow` only relinks the configs, and
-`ze install --system` only refreshes what lives outside your home: the SDDM
-greeter and the sudo helpers.
-
-## Everyday use
-
-| Command | Key | What happens |
-| --- | --- | --- |
-| `ze theme pick` | `ALT + SHIFT + T` | a carousel of theme previews. Same key again closes it |
-| `ze theme set <name>` | | apply a theme. `"Tokyo Night"` and `tokyo-night` both work |
-| `ze bg pick` | `ALT + SHIFT + W` | a carousel of the theme's wallpapers, then a question: Desktop, Login screen or Both |
-| `ze bg next` | `SUPER + W` | next wallpaper. Add `--login` or `--both` for the login screen |
-| | `SUPER + L` | lock the screen |
-| | `Print` | screenshot the monitor under the cursor, then Flameshot's editor |
-| | `SHIFT + Print` | pick a region first, then the editor |
-| | `SUPER + V` | clipboard history, text and images. Same key again closes it |
-
-Also there: `ze theme list`, `ze theme current`, `ze theme sync` (pull new
-themes from omarchy), `ze bg set <image> [--login|--both]` and `ze bg restore`.
-
-In a carousel: arrows or Tab move, typing filters, Enter applies, Esc closes.
-
-In the clipboard history: typing filters, Enter pastes into the window
-underneath, Shift+Enter only copies, Ctrl+Enter opens an image in imv, Delete
-removes the entry, Shift+Delete or the Clear history button clears everything after a Yes/No prompt.
-Copies from KeePassXC are never recorded, and the last 750 entries are kept.
-The clipboard itself survives closing the window you copied from, which
-Wayland does not do on its own; wl-clip-persist keeps a copy and serves it.
+From a terminal the same things are `ze theme pick`, `ze bg pick`,
+`ze bg next` and `ze theme set <name>`. Every key, every `ze` command, the
+carousel and the clipboard picker: [docs/keys.md](docs/keys.md).
 
 ## How it works
 
 `ze theme set` copies the theme to `~/.config/ze/current/theme/`, renders one
-template per app into it, and tells each app to reload. If an app is not
-installed, its step is skipped. Install it later and the next theme set paints
-it too. The full walk-through, app by app, is in
-[docs/theming.md](docs/theming.md).
+template per app into it, and tells each app to reload. An app that is not
+installed is skipped. Install it next month and the next theme set paints it
+too. App by app, with the file each one reads: [docs/theming.md](docs/theming.md).
+The two things that run as root, and why they are tiny:
+[trust boundaries](docs/theming.md#trust-boundaries).
 
 ## Previews
 
-Desktop with rofi, the SDDM greeter, then hyprlock. All three come from the
-same `ze theme set`, captured in a headless compositor.
+Desktop with rofi, the SDDM greeter, then hyprlock. All three come from one
+`ze theme set`, captured in a headless compositor.
 
 | | |
 | --- | --- |
@@ -95,14 +62,10 @@ same `ze theme set`, captured in a headless compositor.
 
 ## Make it yours
 
-Adding a wallpaper to a theme is a copy into one of two folders:
-`backgrounds/<theme>/` for your own (shows in the picker at once) or
-`themes/<theme>/backgrounds/` to ship it with the theme (shows after the next
-`ze theme set`). Adding a theme is a directory with a `colors.toml` and a
-`backgrounds/` folder. Theming another app is one template file and one
-include line. Pulling omarchy's new themes is `ze theme sync`. Step by step
-for all four, plus how this theme set differs from omarchy's, is in
-[docs/customizing.md](docs/customizing.md).
+A new wallpaper is a copy into one folder. A new theme is a `colors.toml`
+and a `backgrounds/` folder. Theming one more app is one template and one
+include line. Pulling omarchy's new themes is `ze theme sync`. All four, step
+by step: [docs/customizing.md](docs/customizing.md).
 
 ## Credits
 
