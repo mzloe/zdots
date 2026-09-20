@@ -94,6 +94,8 @@ stow_packages() {
 # Browser theme colour is a machine policy: root-owned helper + passwordless sudo for it
 install_browser_policy() {
   step "Installing browser policy helper (sudo)"
+  # A sudoers file with a syntax error locks sudo for everyone, so check it first
+  visudo -cf "$ZE_SYSTEM_PATH/ze-browser-policy.sudoers"
   sudo install -m 0755 -o root -g root "$ZE_SYSTEM_PATH/ze-browser-policy" /usr/local/bin/ze-browser-policy
   sudo install -m 0440 -o root -g root "$ZE_SYSTEM_PATH/ze-browser-policy.sudoers" /etc/sudoers.d/ze-browser-policy
   sudo install -d -m 0755 -o root -g root \
