@@ -48,14 +48,16 @@ install_packages() {
     step "Installing yay"
     local build_dir
     build_dir=$(mktemp -d)
+    # As in yay's README: clone, build, install. makepkg shows the PKGBUILD first.
     git clone --depth 1 https://aur.archlinux.org/yay-bin.git "$build_dir/yay-bin"
-    (cd "$build_dir/yay-bin" && makepkg -si --noconfirm)
+    (cd "$build_dir/yay-bin" && makepkg -si)
     rm -rf "$build_dir"
   fi
 
+  # AUR builds are unsigned, so each PKGBUILD is shown for review, as yay does by default
   step "Installing AUR packages"
   mapfile -t packages < <(package_list "$ZDOTS_PATH/packages/aur.txt")
-  yay -S --needed --noconfirm "${packages[@]}"
+  yay -S --needed "${packages[@]}"
 
   step "Enabling services"
   sudo systemctl enable sddm NetworkManager bluetooth

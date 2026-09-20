@@ -41,7 +41,9 @@ run sudo. Plan for about 20 minutes. Most of that is pacman.
 The installer installs the 94 pacman packages and 6 AUR packages listed in
 `packages/`, enables sddm, NetworkManager and bluetooth, links every config
 into `$HOME` with GNU stow, and applies the theme. Anything already in the way
-is moved to `<name>.bak.<timestamp>`, nothing is deleted. Run it again any time.
+is moved to `<name>.bak.<timestamp>`, nothing is deleted. The pacman packages
+install unattended; the AUR builds show you each PKGBUILD first, as makepkg
+does. Run it again any time.
 `ze install --no-packages` does the same without touching packages.
 
 ## Everyday use
