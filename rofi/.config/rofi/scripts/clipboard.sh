@@ -20,7 +20,14 @@ set -o pipefail
 
 self=$(readlink -f "$0")
 theme=$(readlink -f "$(dirname "$self")/../clipboard.rasi")
-thumbs="${XDG_RUNTIME_DIR:-/tmp}/cliphist-thumbs"
+# Decoded clipboard images are private: the session runtime dir, or a 0700 dir of our own
+runtime="${XDG_RUNTIME_DIR:-}"
+if [[ -z $runtime ]]; then
+  runtime="${TMPDIR:-/tmp}/cliphist-$UID"
+  mkdir -m 700 -p "$runtime"
+  [[ -O $runtime && ! -L $runtime ]] || exit 1
+fi
+thumbs="$runtime/cliphist-thumbs"
 terminal_class="com.mitchellh.ghostty"
 mouse=(-hover-select -me-select-entry "" -me-accept-entry MousePrimary)
 

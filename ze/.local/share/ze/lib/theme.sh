@@ -24,7 +24,7 @@ ze_theme_set() {
 
   # Two switches racing would share the staging dir and the current symlinks
   mkdir -p "$ZE_CURRENT_PATH"
-  exec 9>"${XDG_RUNTIME_DIR:-/tmp}/ze-theme-set.lock"
+  exec 9>"$(ze_runtime_dir)/ze-theme-set.lock"
   flock 9
 
   # Stage in next-theme so apps never read a half-written theme

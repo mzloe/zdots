@@ -35,3 +35,15 @@ ze_list_backgrounds() {
   find -L "$ZE_BACKGROUNDS_PATH/$(ze_current_theme_name)/" "$ZE_CURRENT_THEME_PATH/backgrounds/" \
     "${ZE_IMAGE_FIND_ARGS[@]}" -print0 2>/dev/null | sort -z
 }
+
+# Where locks and scratch files go: XDG_RUNTIME_DIR in a session; outside one
+# (cron, ssh) a 0700 directory of our own rather than a fixed name in /tmp
+ze_runtime_dir() {
+  local dir="${XDG_RUNTIME_DIR:-}"
+  if [[ -z $dir ]]; then
+    dir="${TMPDIR:-/tmp}/ze-$UID"
+    mkdir -m 700 -p "$dir"
+    [[ -O $dir && ! -L $dir ]] || ze_die "$dir is not ours"
+  fi
+  printf '%s' "$dir"
+}
